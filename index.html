@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<!--<link rel="stylesheet" href="static/css/style.css">-->
+
+<script type="text/javascript" charset="utf-8">
+    function update() {
+        var table = document.getElementById("table");
+        var new_row = table.insertRow(0);
+
+    }
+    window.onload = function() {
+        update();
+    };
+
+    window.addEventListener('load', function() {
+        var socket = io.connect("http://raspberrypi.local:5000");
+        socket.on('connect', function() {
+
+            socket.emit('my event', {
+
+                data: 'I\'m connected!'
+
+            });
+
+        });
+        socket.on('data updated', function(data) {
+            console.log(data.data);
+            update();
+        });
+    })
+
+</script>
+
+<body>
+    <div class="main">
+        <div class="navbar">
+
+            <div class="head">
+
+                <p>Title</p>
+
+            </div>
+
+        </div>
+        <div class="holder">
+            <table id="table">
+                <tr class="thead">
+                    <th>ID</th>
+                    <th>Temperature</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+                <!-- Test    -->
+                <tr>
+                    <td>001</td>
+                    <td>37</td>
+                    <td>9/22/2021</td>
+                    <td>9:58 PM</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
