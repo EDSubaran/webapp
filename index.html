@@ -1,11 +1,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
 <!--<link rel="stylesheet" href="static/css/style.css">-->
 
 <script type="text/javascript" charset="utf-8">
     function update() {
         var table = document.getElementById("table");
-        var new_row = table.insertRow(0);
 
     }
     window.onload = function() {
@@ -14,6 +14,7 @@
 
     window.addEventListener('load', function() {
         var socket = io.connect("http://raspberrypi.local:5000");
+        var table = document.getElementById("table");
         socket.on('connect', function() {
 
             socket.emit('my event', {
@@ -25,6 +26,23 @@
         });
         socket.on('data updated', function(data) {
             console.log(data.data);
+            var new_row = table.insertRow(1);
+            new_row.insertCell(0).innerHTML = data.data[0];
+            new_row.insertCell(1).innerHTML = data.data[1] + " &#176C";
+            new_row.insertCell(2).innerHTML = data.data[2];
+            new_row.insertCell(3).innerHTML = data.data[3];
+            c = new_row.children;
+            var col = "white";
+            if (data.data[1] >= 38) {
+                for (var i = 0; i < c.length; i++) {
+                    col = "red";
+                }
+            } else {
+                col = "white";
+            }
+            for (var i = 0; i < c.length; i++) {
+                c[i].style.color = col;
+            }
             update();
         });
     })
@@ -50,13 +68,7 @@
                     <th>Date</th>
                     <th>Time</th>
                 </tr>
-                <!-- Test    -->
-                <tr>
-                    <td>001</td>
-                    <td>37</td>
-                    <td>9/22/2021</td>
-                    <td>9:58 PM</td>
-                </tr>
+
             </table>
         </div>
     </div>
